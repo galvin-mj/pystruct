@@ -4,10 +4,21 @@ from numpy.testing import assert_array_equal
 from scipy import sparse
 
 from pystruct.inference.maxprod import (is_tree, inference_max_product,
-                                        iterative_max_product)
+                                        iterative_max_product, is_chain)
 from pystruct.inference import inference_ad3
 from pystruct.datasets import generate_blocks, generate_blocks_multinomial
 from pystruct.models import GridCRF
+
+
+def test_is_chain():
+    chain = np.c_[np.arange(9), np.arange(1, 10)]
+    assert_true(is_chain(chain, len(chain) + 1))
+    assert_false(is_chain(chain, len(chain)))
+    # generate circle
+    circle = np.vstack([chain, [9, 0]])
+    assert_false(is_chain(circle, len(circle)))
+    # reversed order not accepted
+    assert_false(is_chain(chain[::-1], len(chain) + 1))
 
 
 def test_is_tree():
