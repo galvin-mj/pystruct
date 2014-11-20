@@ -171,4 +171,23 @@ def iterative_max_product(unary_potentials, pairwise_potentials, edges,
 
 
 def chain_max_product(unary_potentials, pairwise_potentials):
-    pass
+    n_vertices, n_states = unary_potentials.shape
+    forward_messages = np.zeros((n_vertices, n_states))
+    backward_messages = np.zeros((n_vertices, n_states))
+    # forward:
+    for i in range(n_vertices - 1):
+        incoming = (forward_messages[i] + unary_potentials[i] +
+                    pairwise_potentials[i].T)
+        incoming = incoming.max(axis=1)
+        incoming -= incoming.max()
+        forward_messages[i + 1] = incoming
+    for i in range(1, n_vertices)[::-1]:
+        incoming = (backward_messages[i] + unary_potentials[i] +
+                    pairwise_potentials[i - 1])
+        incoming = incoming.max(axis=1)
+        incoming -= incoming.max()
+        backward_messages[i - 1] = incoming
+    print(forward_messages)
+    print(backward_messages)
+    return np.argmax(forward_messages + backward_messages + unary_potentials,
+                     axis=1)
