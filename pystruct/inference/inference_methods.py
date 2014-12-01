@@ -1,6 +1,5 @@
 import numpy as np
 
-from .linear_programming import lp_general_graph
 from .maxprod import inference_max_product
 from .common import _validate_params, compute_energy
 
@@ -319,6 +318,7 @@ def inference_lp(unary_potentials, pairwise_potentials, edges, relaxed=False,
         Approximate (usually) MAP variable assignment.
         If relaxed=False, this is a tuple of unary and edge 'marginals'.
     """
+    from .linear_programming import lp_general_graph
     shape_org = unary_potentials.shape[:-1]
     n_states, pairwise_potentials = \
         _validate_params(unary_potentials, pairwise_potentials, edges)
